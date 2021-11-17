@@ -31,6 +31,7 @@ func TestConfigurationFromEnvironment(t *testing.T) {
 	os.Setenv("NEW_RELIC_LAMBDA_HANDLER", "newrelic_lambda_wrapper.handler")
 	os.Setenv("NEW_RELIC_LICENSE_KEY", "lk")
 	os.Setenv("NEW_RELIC_LICENSE_KEY_SECRET", "secretId")
+	os.Setenv("NEW_RELIC_LICENSE_KEY_PARAMETER", "parameterName")
 	os.Setenv("NEW_RELIC_LOG_ENDPOINT", "endpoint")
 	os.Setenv("NEW_RELIC_TELEMETRY_ENDPOINT", "endpoint")
 	os.Setenv("NEW_RELIC_HARVEST_RIPE_MILLIS", "0")
@@ -57,6 +58,7 @@ func TestConfigurationFromEnvironment(t *testing.T) {
 	assert.Equal(t, "newrelic_lambda_wrapper.handler", conf.NRHandler)
 	assert.Equal(t, "lk", conf.LicenseKey)
 	assert.Empty(t, conf.LicenseKeySecretId)
+	assert.Empty(t, conf.LicenseKeyParameterName)
 	assert.Equal(t, "endpoint", conf.LogEndpoint)
 	assert.Equal(t, "endpoint", conf.TelemetryEndpoint)
 	assert.Equal(t, uint32(DefaultRipeMillis), conf.RipeMillis)
@@ -71,6 +73,14 @@ func TestConfigurationFromEnvironmentSecretId(t *testing.T) {
 
 	conf := ConfigurationFromEnvironment()
 	assert.Equal(t, "secretId", conf.LicenseKeySecretId)
+}
+
+func TestConfigurationFromEnvironmentParameterName(t *testing.T) {
+	os.Setenv("NEW_RELIC_LICENSE_KEY_PARAMETER", "parameterName")
+	defer os.Unsetenv("NEW_RELIC_LICENSE_KEY_PARAMETER")
+
+	conf := ConfigurationFromEnvironment()
+	assert.Equal(t, "parameterName", conf.LicenseKeyParameterName)
 }
 
 func TestConfigurationFromEnvironmentLogServerHost(t *testing.T) {

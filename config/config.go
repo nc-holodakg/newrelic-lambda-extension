@@ -17,23 +17,25 @@ const (
 var EmptyNRWrapper = "Undefined"
 
 type Configuration struct {
-	ExtensionEnabled   bool
-	LicenseKey         string
-	LicenseKeySecretId string
-	NRHandler          string
-	TelemetryEndpoint  string
-	LogEndpoint        string
-	RipeMillis         uint32
-	RotMillis          uint32
-	LogLevel           string
-	SendFunctionLogs   bool
-	LogServerHost      string
+	ExtensionEnabled        bool
+	LicenseKey              string
+	LicenseKeySecretId      string
+	LicenseKeyParameterName string
+	NRHandler               string
+	TelemetryEndpoint       string
+	LogEndpoint             string
+	RipeMillis              uint32
+	RotMillis               uint32
+	LogLevel                string
+	SendFunctionLogs        bool
+	LogServerHost           string
 }
 
 func ConfigurationFromEnvironment() *Configuration {
 	enabledStr, extensionEnabledOverride := os.LookupEnv("NEW_RELIC_LAMBDA_EXTENSION_ENABLED")
 	licenseKey, lkOverride := os.LookupEnv("NEW_RELIC_LICENSE_KEY")
 	licenseKeySecretId, lkSecretOverride := os.LookupEnv("NEW_RELIC_LICENSE_KEY_SECRET")
+	licenseKeyParameterName, lkParameterOverride := os.LookupEnv("NEW_RELIC_LICENSE_KEY_PARAMETER")
 	nrHandler, nrOverride := os.LookupEnv("NEW_RELIC_LAMBDA_HANDLER")
 	telemetryEndpoint, teOverride := os.LookupEnv("NEW_RELIC_TELEMETRY_ENDPOINT")
 	logEndpoint, leOverride := os.LookupEnv("NEW_RELIC_LOG_ENDPOINT")
@@ -53,6 +55,8 @@ func ConfigurationFromEnvironment() *Configuration {
 		ret.LicenseKey = licenseKey
 	} else if lkSecretOverride {
 		ret.LicenseKeySecretId = licenseKeySecretId
+	} else if lkParameterOverride {
+		ret.LicenseKeyParameterName = licenseKeyParameterName
 	}
 
 	if nrOverride {
